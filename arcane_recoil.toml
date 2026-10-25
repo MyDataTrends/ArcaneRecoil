@@ -1,0 +1,266 @@
+# Arcane Recoil v1.1: the plugin as data (agent/modgen.py). Build everything with: python -I dev/SpellShield/build.py
+# The DLL finds records through plugin/src/FormIDs.h (written by this build) and the settings by editor id.
+[plugin]
+name = "ArcaneRecoil.esp"
+folder = "Lalaland-lab - Arcane Recoil"
+masters = ["Skyrim.esm"]
+light = true
+author = "BigQuinn"
+cpp_header = "plugin/src/FormIDs.h"
+
+[[global]]
+edid = "ArcaneRecoil_Enabled"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_LeftHandOnly"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_Environmental"
+value = 0.0
+
+[[global]]
+edid = "ArcaneRecoil_BaseAbsorption"
+value = 20.0
+
+[[global]]
+edid = "ArcaneRecoil_ScalingFactor"
+value = 2.0
+
+[[global]]
+edid = "ArcaneRecoil_AlterationBonus"
+value = 1.25
+
+[[global]]
+edid = "ArcaneRecoil_RestorationBonus"
+value = 1.5
+
+[[global]]
+edid = "ArcaneRecoil_PartialAbsorption"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_AoEEnabled"
+value = 0.0
+
+[[global]]
+edid = "ArcaneRecoil_AoEMultiplier"
+value = 0.5
+
+[[global]]
+edid = "ArcaneRecoil_AoERadius"
+value = 15.0
+
+[[global]]
+edid = "ArcaneRecoil_FriendlyFire"
+value = 0.0
+
+[[global]]
+edid = "ArcaneRecoil_ScreenFlash"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_ExplosionVFX"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_DetonationSound"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_Notification"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_TriggerThreshold"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_DrainAllMagicka"
+value = 0.0
+
+[[global]]
+edid = "ArcaneRecoil_StaggerEnabled"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_StaggerStrength"
+value = 0.5
+
+[[global]]
+edid = "ArcaneRecoil_PerfectWindow"
+value = 0.35
+
+[[global]]
+edid = "ArcaneRecoil_Riders"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_RiderMultiplier"
+value = 0.25
+
+[[global]]
+edid = "ArcaneRecoil_WardBonus"
+value = 1.5
+
+[[global]]
+edid = "ArcaneRecoil_NPCMages"
+value = 0.0
+
+[[global]]
+edid = "ArcaneRecoil_DebugLog"
+value = 0.0
+
+[[global]]
+edid = "ArcaneRecoil_DebugForceCharge"
+value = 0.0
+
+[[global]]
+edid = "ArcaneRecoil_CostRatio"
+value = 0.5
+
+[[global]]
+edid = "ArcaneRecoil_CostMaxFraction"
+value = 0.6
+
+[[global]]
+edid = "ArcaneRecoil_PerfectCostMult"
+value = 0.5
+
+[[global]]
+edid = "ArcaneRecoil_ConcentrationCapMult"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_ConcentrationCooldown"
+value = 3.0
+
+[[global]]
+edid = "ArcaneRecoil_WardsEnabled"
+value = 1.0
+
+[[global]]
+edid = "ArcaneRecoil_WardsDeferToMods"
+value = 1.0
+
+# cosmetic explosions duplicated from vanilla (EXPL DATA: force at 24, damage at 28, radius at 32). v1.2 (2026-10-18,
+# user: "more of a POP! instead of an ongoing explosion", worst on wards): impact-sized sources instead of full
+# fireball/rune explosions and the Nightingale shockwave (TG08IrkngthandMercerShockwave.nif, its radius patch only
+# changed the damage area, not the visual).
+[[copy]]
+edid = "ArcaneRecoil_FireExplosion"
+from = "FireballStormImpactExplosion"
+patch = [{ sub = "DATA", offset = 24, float = 0.0 }, { sub = "DATA", offset = 28, float = 0.0 }]
+[[copy]]
+edid = "ArcaneRecoil_FrostExplosion"
+from = "crExplosionFrostSM"
+patch = [{ sub = "DATA", offset = 24, float = 0.0 }, { sub = "DATA", offset = 28, float = 0.0 }]
+[[copy]]
+edid = "ArcaneRecoil_ShockExplosion"
+from = "ChainLightningExplosion"
+patch = [{ sub = "DATA", offset = 24, float = 0.0 }, { sub = "DATA", offset = 28, float = 0.0 }]
+[[copy]]
+edid = "ArcaneRecoil_ArcaneExplosion"
+from = "ExplosionIllusionLight01"
+patch = [{ sub = "DATA", offset = 24, float = 0.0 }, { sub = "DATA", offset = 28, float = 0.0 }]
+[[copy]]
+edid = "ArcaneRecoil_DarkExplosion"
+from = "ExplosionIllusionDark01"
+late = true   # new in v1.2: ID after every existing record (the compiled DLL and saves keep theirs)
+patch = [{ sub = "DATA", offset = 24, float = 0.0 }, { sub = "DATA", offset = 28, float = 0.0 }]
+
+# brief white flash (Alduin's explosion flash, 0.25 s -> 0.15 s)
+[[copy]]
+edid = "ArcaneRecoil_FlashISM"
+from = "alduinExplosionFlashImod"
+patch = [{ sub = "DNAM", offset = 4, float = 0.15 }]
+
+# the VFX script's Sound property: a sound marker pointing at vanilla's ward-break descriptor (until a custom .wav)
+[[record]]
+type = "SOUN"
+edid = "ArcaneRecoil_Detonation"
+subs = [{ sig = "OBND", hex = "000000000000000000000000" }, { sig = "SDSC", ref = "MAGWardTestBreakSD" }]
+
+# AoE + fire rider; magnitude set when cast. Delivery Target Actor (3): an Aimed spell cast immediately
+# launches a projectile instead of applying (2026-10-15: the wolf's health never moved with Aimed)
+[[record]]
+type = "SPEL"
+edid = "ArcaneRecoil_BurstFire"
+subs = [{ sig = "OBND", hex = "000000000000000000000000" }, { sig = "FULL", zstr = "Arcane Recoil: Fire" },
+        { sig = "MDOB", hex = "64e20400" }, { sig = "ETYP", hex = "443f0100" }, { sig = "SPIT", hex = "000000000100000000000000000000000100000003000000000000000000000000000000" },
+        { sig = "EFID", ref = "FireDamageFFAimed" }, { sig = "EFIT", hex = "0000803f0000000000000000" }]
+
+# AoE + frost rider (frost also saps stamina)
+[[record]]
+type = "SPEL"
+edid = "ArcaneRecoil_BurstFrost"
+subs = [{ sig = "OBND", hex = "000000000000000000000000" }, { sig = "FULL", zstr = "Arcane Recoil: Frost" },
+        { sig = "MDOB", hex = "64e20400" }, { sig = "ETYP", hex = "443f0100" }, { sig = "SPIT", hex = "000000000100000000000000000000000100000003000000000000000000000000000000" },
+        { sig = "EFID", ref = "FrostDamageFFAimed" }, { sig = "EFIT", hex = "0000803f0000000000000000" }]
+
+# AoE + shock rider (shock also drains magicka)
+[[record]]
+type = "SPEL"
+edid = "ArcaneRecoil_BurstShock"
+subs = [{ sig = "OBND", hex = "000000000000000000000000" }, { sig = "FULL", zstr = "Arcane Recoil: Shock" },
+        { sig = "MDOB", hex = "64e20400" }, { sig = "ETYP", hex = "443f0100" }, { sig = "SPIT", hex = "000000000100000000000000000000000100000003000000000000000000000000000000" },
+        { sig = "EFID", ref = "ShockDamageFFAimed" }, { sig = "EFIT", hex = "0000803f0000000000000000" }]
+
+# fire rider: damage per second for 3 s
+[[record]]
+type = "SPEL"
+edid = "ArcaneRecoil_Burn"
+subs = [{ sig = "OBND", hex = "000000000000000000000000" }, { sig = "FULL", zstr = "Arcane Recoil: Burn" },
+        { sig = "MDOB", hex = "64e20400" }, { sig = "ETYP", hex = "443f0100" }, { sig = "SPIT", hex = "000000000100000000000000000000000100000003000000000000000000000000000000" },
+        { sig = "EFID", ref = "FireDamageFFAimed" }, { sig = "EFIT", hex = "0000803f0000000003000000" }]
+
+# engine stagger push (Firebolt's own impact effect); magnitude = strength
+[[record]]
+type = "SPEL"
+edid = "ArcaneRecoil_Stagger"
+subs = [{ sig = "OBND", hex = "000000000000000000000000" }, { sig = "FULL", zstr = "Arcane Recoil: Stagger" },
+        { sig = "MDOB", hex = "64e20400" }, { sig = "ETYP", hex = "443f0100" }, { sig = "SPIT", hex = "000000000100000000000000000000000100000003000000000000000000000000000000" },
+        { sig = "EFID", ref = "PerkImpactStaggerPushFFAimed" }, { sig = "EFIT", hex = "0000003f0000000000000000" }]
+
+# Restoration rider on the caster
+[[record]]
+type = "SPEL"
+edid = "ArcaneRecoil_Heal"
+subs = [{ sig = "OBND", hex = "000000000000000000000000" }, { sig = "FULL", zstr = "Arcane Recoil: Second Breath" },
+        { sig = "MDOB", hex = "64e20400" }, { sig = "ETYP", hex = "443f0100" }, { sig = "SPIT", hex = "000000000100000000000000000000000100000000000000000000000000000000000000" },
+        { sig = "EFID", ref = "RestoreHealthFFSelf" }, { sig = "EFIT", hex = "0000803f0000000000000000" }]
+
+# Alteration rider: armor for 10 s (Oakflesh's effect)
+[[record]]
+type = "SPEL"
+edid = "ArcaneRecoil_Harden"
+subs = [{ sig = "OBND", hex = "000000000000000000000000" }, { sig = "FULL", zstr = "Arcane Recoil: Hardened" },
+        { sig = "MDOB", hex = "64e20400" }, { sig = "ETYP", hex = "443f0100" }, { sig = "SPIT", hex = "000000000100000000000000000000000100000000000000000000000000000000000000" },
+        { sig = "EFID", ref = "ArmorFFSelf0" }, { sig = "EFIT", hex = "0000a041000000000a000000" }]
+
+# MCM: MCM Helper page (MCM/Config/ArcaneRecoil/config.json, written by build.py), script is a stub
+[[quest]]
+edid = "ArcaneRecoil_MCMQuest"
+name = "Arcane Recoil MCM"
+script = "ArcaneRecoil_MCM"
+
+# VFX: listens for the DLL's "ArcaneRecoil_VFX" mod event; the player alias re-registers on every game load
+[[quest]]
+edid = "ArcaneRecoil_VFXQuest"
+name = "Arcane Recoil VFX"
+script = "ArcaneRecoil_VFX"
+player_alias_script = "ArcaneRecoil_VFXAlias"
+[quest.props]
+ExplosionFire = "ArcaneRecoil_FireExplosion"
+ExplosionFrost = "ArcaneRecoil_FrostExplosion"
+ExplosionShock = "ArcaneRecoil_ShockExplosion"
+ExplosionArcane = "ArcaneRecoil_ArcaneExplosion"
+ExplosionAlteration = "ArcaneRecoil_ArcaneExplosion"
+ExplosionConjuration = "ArcaneRecoil_DarkExplosion"
+ExplosionIllusion = "ArcaneRecoil_DarkExplosion"
+ExplosionRestoration = "ArcaneRecoil_ArcaneExplosion"
+SD_Detonation = "ArcaneRecoil_Detonation"
+gExplosionVFX = "ArcaneRecoil_ExplosionVFX"
+gDetonationSound = "ArcaneRecoil_DetonationSound"
+XMarker = "XMarker"

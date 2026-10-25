@@ -1,0 +1,407 @@
+{
+  "modName": "ArcaneRecoil",
+  "displayName": "Arcane Recoil",
+  "minMcmVersion": 11,
+  "pages": [
+    {
+      "pageDisplayName": "General",
+      "cursorFillMode": "topToBottom",
+      "content": [
+        {
+          "text": "Mod enabled",
+          "type": "toggle",
+          "help": "Master switch.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|800"
+          }
+        },
+        {
+          "text": "Left hand only",
+          "type": "toggle",
+          "help": "Off: a charging right-hand spell recoils too.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|801"
+          }
+        },
+        {
+          "text": "Outside combat too",
+          "type": "toggle",
+          "help": "Off: only recoil while in combat (stands in for 'no fall/trap damage': the source of damage is not known before it applies).",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|802"
+          }
+        },
+        {
+          "text": "Enemy mages recoil too",
+          "type": "toggle",
+          "help": "NPCs charging a spell get the same shield.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|818"
+          }
+        }
+      ]
+    },
+    {
+      "pageDisplayName": "Absorption",
+      "cursorFillMode": "topToBottom",
+      "content": [
+        {
+          "text": "Trigger: damage above spell magnitude x",
+          "type": "slider",
+          "help": "A hit only triggers the recoil if its damage is greater than the held spell's magnitude times this. 1.0 = the author's rule; 0 = any hit.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|810",
+            "min": 0.0,
+            "max": 3.0,
+            "step": 0.1,
+            "formatString": "{1}"
+          }
+        },
+        {
+          "text": "Base absorption",
+          "type": "slider",
+          "help": "Flat absorption amount.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|803",
+            "min": 0,
+            "max": 200,
+            "step": 5,
+            "formatString": "{0}"
+          }
+        },
+        {
+          "text": "Absorption per skill point",
+          "type": "slider",
+          "help": "Cap = base + skill x this.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|804",
+            "min": 0.0,
+            "max": 5.0,
+            "step": 0.1,
+            "formatString": "{1}"
+          }
+        },
+        {
+          "text": "Alteration multiplier",
+          "type": "slider",
+          "help": "Scaling multiplier for Alteration spells.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|805",
+            "min": 1.0,
+            "max": 3.0,
+            "step": 0.05,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "text": "Restoration multiplier",
+          "type": "slider",
+          "help": "Scaling multiplier for Restoration spells.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|806",
+            "min": 1.0,
+            "max": 3.0,
+            "step": 0.05,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "text": "Ward multiplier",
+          "type": "slider",
+          "help": "Cap multiplier while holding a ward. Wards also keep their charge.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|817",
+            "min": 1.0,
+            "max": 3.0,
+            "step": 0.05,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "text": "Partial absorption",
+          "type": "toggle",
+          "help": "On: hits above the cap are reduced by the cap. Off: hits above the cap break through untouched.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|807"
+          }
+        },
+        {
+          "text": "Magicka per absorbed damage",
+          "type": "slider",
+          "help": "Cost = absorbed damage x this (a mana shield), never less than the spell's own cost.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|81B",
+            "min": 0.0,
+            "max": 2.0,
+            "step": 0.05,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "text": "Cost ceiling (share of max magicka)",
+          "type": "slider",
+          "help": "A massive hit still gets blocked, but costs up to this share of your maximum magicka.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|81C",
+            "min": 0.1,
+            "max": 1.0,
+            "step": 0.05,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "text": "Perfect recoil cost (share)",
+          "type": "slider",
+          "help": "A perfectly timed recoil pays this share of the cost.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|81D",
+            "min": 0.0,
+            "max": 1.0,
+            "step": 0.05,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "text": "Drain all magicka",
+          "type": "toggle",
+          "help": "Overrides the cost rules: every recoil empties your magicka (v1.0 behaviour).",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|811"
+          }
+        }
+      ]
+    },
+    {
+      "pageDisplayName": "Spell types",
+      "cursorFillMode": "topToBottom",
+      "content": [
+        {
+          "text": "Concentration: absorb up to magnitude x",
+          "type": "slider",
+          "help": "A held stream (Flames, Healing...) only saves what it would deal itself.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|81E",
+            "min": 0.5,
+            "max": 5.0,
+            "step": 0.25,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "text": "Concentration: cooldown (s)",
+          "type": "slider",
+          "help": "After a concentration spell recoils, it cannot recoil again for this long.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|81F",
+            "min": 0.0,
+            "max": 10.0,
+            "step": 0.5,
+            "formatString": "{1}"
+          }
+        },
+        {
+          "text": "Wards recoil",
+          "type": "toggle",
+          "help": "Holding a ward: bigger absorption (Ward multiplier) and the ward is not lost.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|820"
+          }
+        },
+        {
+          "text": "Leave wards to ward overhauls",
+          "type": "toggle",
+          "help": "If Perfectly Valid Wards or Wards Functionalities Extended is installed, wards do not recoil.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|821"
+          }
+        }
+      ]
+    },
+    {
+      "pageDisplayName": "Combat",
+      "cursorFillMode": "topToBottom",
+      "content": [
+        {
+          "text": "Stagger the attacker",
+          "type": "toggle",
+          "help": "The recoil pushes the attacker back.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|812"
+          }
+        },
+        {
+          "text": "Stagger strength",
+          "type": "slider",
+          "help": "Doubled on a perfect recoil.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|813",
+            "min": 0.0,
+            "max": 2.0,
+            "step": 0.05,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "text": "Perfect recoil window (s)",
+          "type": "slider",
+          "help": "Hit within this long after you start casting: reduced cost, double stagger.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|814",
+            "min": 0.0,
+            "max": 1.0,
+            "step": 0.05,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "text": "Element riders",
+          "type": "toggle",
+          "help": "Fire burns, frost saps stamina, shock drains magicka (on the attacker); Restoration heals you, Alteration hardens your skin.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|815"
+          }
+        },
+        {
+          "text": "Rider strength (x absorbed)",
+          "type": "slider",
+          "help": "Rider magnitude = absorbed damage x this.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|816",
+            "min": 0.0,
+            "max": 1.0,
+            "step": 0.05,
+            "formatString": "{2}"
+          }
+        },
+        {
+          "text": "Burst damages nearby enemies",
+          "type": "toggle",
+          "help": "Destruction: element damage (resistances, aggro, XP apply). Other schools: a shockwave that pushes.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|808"
+          }
+        },
+        {
+          "text": "Burst damage (x absorbed)",
+          "type": "slider",
+          "help": "",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|809",
+            "min": 0.1,
+            "max": 2.0,
+            "step": 0.1,
+            "formatString": "{1}"
+          }
+        },
+        {
+          "text": "Burst radius (feet)",
+          "type": "slider",
+          "help": "",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|80A",
+            "min": 5,
+            "max": 30,
+            "step": 1,
+            "formatString": "{0}"
+          }
+        },
+        {
+          "text": "Friendly fire",
+          "type": "toggle",
+          "help": "The burst also hits followers.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|80B"
+          }
+        }
+      ]
+    },
+    {
+      "pageDisplayName": "Feedback",
+      "cursorFillMode": "topToBottom",
+      "content": [
+        {
+          "text": "Screen flash",
+          "type": "toggle",
+          "help": "",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|80C"
+          }
+        },
+        {
+          "text": "Explosion from the hand",
+          "type": "toggle",
+          "help": "",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|80D"
+          }
+        },
+        {
+          "text": "Detonation sound",
+          "type": "toggle",
+          "help": "",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|80E"
+          }
+        },
+        {
+          "text": "Notification",
+          "type": "toggle",
+          "help": "\"Arcane Recoil absorbed X damage\" / \"Perfect Recoil!\"",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|80F"
+          }
+        },
+        {
+          "text": "Debug log",
+          "type": "toggle",
+          "help": "Write every recoil decision to My Games/Skyrim.INI/SKSE/ArcaneRecoil.log.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|819"
+          }
+        },
+        {
+          "text": "Test: always charging",
+          "type": "toggle",
+          "help": "Testing only: treat the left hand as charging at all times.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "ArcaneRecoil.esp|81A"
+          }
+        }
+      ]
+    }
+  ]
+}
