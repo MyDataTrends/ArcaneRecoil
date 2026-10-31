@@ -340,7 +340,14 @@ void ApplyRecoil(const Recoil &r) {
   g_inEffects = false;
 
   ApplyAoE(actor, r);
-  if (IsPlayer(actor)) {
+  // v1.2.1: the flash and the message at most once per 1.5 s, like the explosion (VFX_COOLDOWN in the VFX script). A ward
+  // recoils on every hit, so a dragon's breath on a ward re-fired the white flash every damage tick: a 3.5 s white-out
+  // (user's clip, 2026-10-25 session, 21_arcane_recoil). The recoil itself still happens on every hit.
+  static std::chrono::steady_clock::time_point s_lastFeedback{};
+  const auto now = std::chrono::steady_clock::now();
+  const bool feedback = now - s_lastFeedback >= std::chrono::milliseconds(1500);
+  if (IsPlayer(actor) && feedback) {
+    s_lastFeedback = now;
     if (Settings::ScreenFlash()) {
       if (auto *imod = Settings::FlashIMOD()) RE::ImageSpaceModifierInstanceForm::Trigger(imod, 1.0f, nullptr);
     }
